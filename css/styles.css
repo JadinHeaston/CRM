@@ -1,0 +1,77 @@
+:root {
+
+	/* Header */
+	--header-height: 5rem;
+	--header-background-color: red;
+
+	/* Main */
+	--main-background-color: coral;
+
+	/* Footer */
+	--footer-height: 5rem;
+	--footer-background-color: blue;
+}
+
+.no-text-select {
+	/* iOS Safari */
+	-webkit-touch-callout: none;
+	/* Safari */
+	-webkit-user-select: none;
+	/* Konqueror HTML */
+	-khtml-user-select: none;
+	/* Old versions of Firefox */
+	-moz-user-select: none;
+	/* Internet Explorer/Edge */
+	-ms-user-select: none;
+	/* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+	user-select: none;
+}
+
+label.required::after {
+	content: " *";
+	color: #e32;
+	vertical-align: middle;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0;
+	height: 100vh;
+	max-height: 100vh;
+}
+
+header {
+	background-color: var(--header-background-color);
+	max-height: var(--header-height);
+	text-align: center;
+	width: 100%;
+}
+
+header>h1 {
+	margin: 0;
+	padding: 0;
+}
+
+nav {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+nav>ul {
+	list-style: none;
+}
+
+main {
+	flex-grow: 1;
+	background-color: var(--main-background-color);
+}
+
+footer {
+	background-color: var(--footer-background-color);
+	max-height: var(--footer-height);
+	width: 100%;
+}
