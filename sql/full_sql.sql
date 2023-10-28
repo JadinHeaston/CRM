@@ -24,10 +24,11 @@ CREATE TABLE `Priority` (
 
 ---- Values
 INSERT INTO Priority values
-(1, "Void", "Initial value and catch-all."),
-(2, "Successful", "The change has been done successfully."),
-(3, "Failed", "The change failed to be done."),
-(4, "Cancelled", "The change was cancelled.");
+(1, "Void", "Catch-all."),
+(2, "Low", ""),
+(3, "Medium", ""),
+(4, "High", ""),
+(5, "Emergency", "");
 
 -- Result
 CREATE TABLE `Result` (

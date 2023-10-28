@@ -41,35 +41,35 @@ CREATE OR REPLACE DATABASE crm;
 
 ### Change
 
-| Column Name           | Description                                                                  | Datatype                          |
-| --------------------- | ---------------------------------------------------------------------------- | --------------------------------- |
-| id                    |                                                                              | BINARY(16)                        |
-| owner                 | Change Owner (`ID`)                                                          | BINARY(16)                        |
-| requestor             | Change Requestor (`ID`)                                                      | BINARY(16)                        |
-| description           | Description of change being requested.                                       | TEXT(65535) |
-| business_case         | Business case for the change.                                                | TEXT(65535) |
-| business_impact       | Business units impacted by the change?                                       | TEXT(65535) |
-| it_impact             | IT Infrastructure Systems Impacted by the Change.                            | TEXT(65535) |
-| service_impact        | Services impacted by the change?                                             | TEXT(65535) |
-| communication_plan    | What is the communication plan for the change?                               | TEXT(65535) |
-| risk                  | What are the risks to business operations?                                   | TEXT(65535) |
-| regulatory_compliance | Select any regulatory compliance items that may be impacted.                 | TEXT(65535) |
-| documentation         | Describe the implementation plan or list SOP for the process.                | TEXT(65535) |
-| recovery_procedure    | Describe the back out procedure in case of failure.                          | TEXT(65535) |
-| test_procudure        | Describe the test procedure to be used prior to implementation in production | TEXT(65535) |
-| change_date           | Proposed Implementation Date                                                 | DATETIME                          |
-| changers              | Who are the required personnel to complete the change?                       | JSON                              |
-| expected_time         | What is the estimated hours to complete the change?                          | mediumint unsigned                |
-| expected_duration     | If a system outage is expected, what is the duration?                        | mediumint unsigned                |
-| priority              | Normal or Emergency                                                          | TINYINT UNSIGNED                  |
-| type                  | Low, Medium, High, Emergency                                                 | TINYINT UNSIGNED                  |
-| review_date           |                                                                              | DATETIME                          |
-| reviewers             |                                                                              | JSON                              |
-| status                |                                                                              | TINYINT UNSIGNED                  |
-| result                |                                                                              | TINYINT UNSIGNED                  |
-| notes                 |                                                                              | TEXT(65535) |
-| completion_date       |                                                                              | DATETIME                          |
-| creation_date         |                                                                              | DATETIME                          |
+| Column Name           | Description                                                                  | Datatype           |
+| --------------------- | ---------------------------------------------------------------------------- | ------------------ |
+| id                    |                                                                              | BINARY(16)         |
+| owner                 | Change Owner (`ID`)                                                          | BINARY(16)         |
+| requestor             | Change Requestor (`ID`)                                                      | BINARY(16)         |
+| description           | Description of change being requested.                                       | TEXT(65535)        |
+| business_case         | Business case for the change.                                                | TEXT(65535)        |
+| business_impact       | Business units impacted by the change?                                       | TEXT(65535)        |
+| it_impact             | IT Infrastructure Systems Impacted by the Change.                            | TEXT(65535)        |
+| service_impact        | Services impacted by the change?                                             | TEXT(65535)        |
+| communication_plan    | What is the communication plan for the change?                               | TEXT(65535)        |
+| risk                  | What are the risks to business operations?                                   | TEXT(65535)        |
+| regulatory_compliance | Select any regulatory compliance items that may be impacted.                 | TEXT(65535)        |
+| documentation         | Describe the implementation plan or list SOP for the process.                | TEXT(65535)        |
+| recovery_procedure    | Describe the back out procedure in case of failure.                          | TEXT(65535)        |
+| test_procudure        | Describe the test procedure to be used prior to implementation in production | TEXT(65535)        |
+| change_date           | Proposed Implementation Date                                                 | DATETIME           |
+| changers              | Who are the required personnel to complete the change?                       | JSON               |
+| expected_time         | What is the estimated hours to complete the change?                          | mediumint unsigned |
+| expected_duration     | If a system outage is expected, what is the duration?                        | mediumint unsigned |
+| priority              | Normal or Emergency                                                          | TINYINT UNSIGNED   |
+| type                  | Low, Medium, High, Emergency                                                 | TINYINT UNSIGNED   |
+| review_date           |                                                                              | DATETIME           |
+| reviewers             |                                                                              | JSON               |
+| status                |                                                                              | TINYINT UNSIGNED   |
+| result                |                                                                              | TINYINT UNSIGNED   |
+| notes                 |                                                                              | TEXT(65535)        |
+| completion_date       |                                                                              | DATETIME           |
+| creation_date         |                                                                              | DATETIME           |
 
 #### SQL Creation
 
@@ -176,22 +176,23 @@ CREATE TABLE `Priority` (
 
 #### Values
 
-| ID  | Name      | Description                  |
-| --- | --------- | ---------------------------- |
-| 1   | Void      | Initial value and catch-all. |
-| 2   | Low       |                              |
-| 3   | Medium    |                              |
-| 4   | High      |                              |
-| 5   | Emergency |                              |
+| ID  | Name      | Description |
+| --- | --------- | ----------- |
+| 1   | Void      | Catch-all.  |
+| 2   | Low       |             |
+| 3   | Medium    |             |
+| 4   | High      |             |
+| 5   | Emergency |             |
 
 ##### SQL Insert
 
 ```sql
 INSERT INTO Priority values
-(1, "Void", "Initial value and catch-all."),
-(2, "Successful", "The change has been done successfully."),
-(3, "Failed", "The change failed to be done."),
-(4, "Cancelled", "The change was cancelled.");
+(1, "Void", "Catch-all."),
+(2, "Low", ""),
+(3, "Medium", ""),
+(4, "High", ""),
+(5, "Emergency", "");
 ```
 
 ### Result
