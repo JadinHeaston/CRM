@@ -1,7 +1,5 @@
 <?PHP
 
-namespace jbh;
-
 class DatabaseConnector
 {
 	protected \PDO $connection;
@@ -683,6 +681,45 @@ class ScopeTimer
 	//$timer = new ScopeTimer(__FILE__);
 }
 
-class ChangeOwner {
-	
+class User
+{
+	public string $id;
+	public string $username;
+	public string $firstName;
+	public string $lastName;
+	public string $email;
+	public Permission $permission;
+}
+
+class Change
+{
+	public string $id;
+	public User $owner;
+	public User $requestor;
+	public string $description;
+	public string $businessCase;
+	public string $businessImpact;
+	public string $itImpact;
+	public string $serviceImpact;
+	public string $communicationPlan;
+	public string $risk;
+	public string $regulatoryCompliance;
+	public string $documentation;
+	public string $recoveryProcedure;
+	public string $testProcedure;
+	public string $changeDate;
+	/** array<User> */
+	public array $changers;
+	public int $expectedTime;
+	public int $expectedDuration;
+	public Priority $priority;
+	public Type $type;
+	public string $reviewDate;
+	/** array<User> */
+	public array $reviewers;
+	public Status $status;
+	public Result $result;
+	public string $notes;
+	public string $completionDate;
+	public string $creationDate;
 }

@@ -252,15 +252,14 @@ CREATE TABLE `Status` (
 
 #### Values
 
-| ID  | Name            | Description                                                        |
-| --- | --------------- | ------------------------------------------------------------------ |
-| 1   | Void            | Initial request creation status, also acts as a catch-all failure. |
-| 2   | Draft           | A draft of a request.                                              |
-| 3   | Requested       | The change has been requested and is awaiting approval.            |
-| 4   | Awaiting Review | The change is awaiting review by an approver.                      |
-| 5   | Approved        | The change has been approved!                                      |
-| 6   | Denied          | The change has been denied.                                        |
-| 7   | Deleted         | The change has been deleted.                                       |
+| ID  | Name      | Description                                                        |
+| --- | --------- | ------------------------------------------------------------------ |
+| 1   | Void      | Initial request creation status, also acts as a catch-all failure. |
+| 2   | Draft     | A draft of a request.                                              |
+| 3   | Requested | The change has been requested and is awaiting approval.            |
+| 4   | Approved  | The change has been approved!                                      |
+| 5   | Denied    | The change has been denied.                                        |
+| 6   | Deleted   | The change has been deleted.                                       |
 
 ##### SQL Insert
 
@@ -269,10 +268,9 @@ INSERT INTO Status values
 (1, "Void", "Initial request creation status, also acts as a catch-all failure."),
 (2, "Draft", "A draft of a request."),
 (3, "Requested", "The change has been requested and is awaiting approval."),
-(4, "Awaiting Review", "The change is awaiting review by an approver."),
-(5, "Approved", "The change has been approved!"),
-(6, "Denied", "The change has been denied."),
-(7, "Deleted", "The change has been deleted.");
+(4, "Approved", "The change has been approved!"),
+(5, "Denied", "The change has been denied."),
+(6, "Deleted", "The change has been deleted.");
 ```
 
 ### Type

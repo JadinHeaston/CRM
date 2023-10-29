@@ -1,34 +1,26 @@
 version: "3.7"
 
 services:
-  web:
+  proxy:
+    container_name: crm-proxy
     image: nginx:mainline-alpine3.18-slim
     ports:
-      - 80:80
+      - 3500:80
     volumes:
-      - /var/www/docker-study.loc/recipe-03/php:/var/www/myapp
-      - /var/www/docker-study.loc/recipe-03/docker/site.conf:/etc/nginx/conf.d/site.conf
+      - ../:/var/www/myapp
+      - ./site.conf:/etc/nginx/conf.d/site.conf
     depends_on:
       - php
       - mariadb
 
   php:
+    container_name: crm-php
     image: php:8.2.12-fpm-alpine3.18
-    volumes:
-      - /var/www/docker-study.loc/recipe-03/php:/var/www/myapp
-      - /var/www/docker-study.loc/recipe-03/docker/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - mariadb
 
-  mariadb:
-    image: mariadb:latest
-    restart: always
-    volumes:
-      - mariadb-data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: AIJHKSDGDBKAJSHGBAIUYSGTHbaiusygausi8yg687589687tgjhkaGISUGF&$(6987)
-
   phpmyadmin:
+    container_name: crm-phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     ports:
       - 8000:80
@@ -38,5 +30,13 @@ services:
     depends_on:
       - mariadb
 
+  mariadb:
+    container_name: crm-mariadb
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: DevelopmentPassword
 volumes:
   mariadb-data:

@@ -1,5 +1,5 @@
 :root {
-
+	--default-transition-duration: 350ms;
 	/* Header */
 	--header-height: 5rem;
 	--header-background-color: red;
@@ -10,6 +10,8 @@
 	/* Footer */
 	--footer-height: 5rem;
 	--footer-background-color: blue;
+
+	font-size: 18px;
 }
 
 .no-text-select {
@@ -58,11 +60,70 @@ header>h1 {
 nav {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: start;
+	position: fixed;
+	top: .20rem;
+	left: .25rem;
+}
+
+nav button {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+nav #menu-icon {
+	height: 2rem;
+	width: 2rem;
+}
+
+nav>button:hover~ul,
+nav>button:focus~ul,
+nav>button:active~ul,
+nav>ul:hover,
+nav>ul:focus,
+nav>ul:active {
+	opacity: 100%;
+	pointer-events: all;
 }
 
 nav>ul {
 	list-style: none;
+	margin: 0;
+	margin-block-start: 0;
+	margin-block-end: 0;
+	padding-inline-start: 0;
+	transition-duration: var(--default-transition-duration);
+	opacity: 0%;
+	pointer-events: none;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	justify-content: left;
+	text-align: start;
+	border: .1rem solid gray;
+	border-radius: 0 1rem 1rem 1rem;
+	background-color: aquamarine;
+}
+
+nav>ul>li {
+	padding: .2rem;
+	width: 100%;
+}
+
+nav>ul>li>a {
+	text-align: start;
+	display: block;
+	width: calc(100% - .5rem * 2);
+	margin: .5rem;
+}
+
+nav>ul>li>a:hover {
+	background-color: peru;
 }
 
 main {
@@ -74,4 +135,10 @@ footer {
 	background-color: var(--footer-background-color);
 	max-height: var(--footer-height);
 	width: 100%;
+}
+
+#new-change-form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	width: 50%;
 }
