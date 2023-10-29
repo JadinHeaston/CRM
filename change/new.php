@@ -1,10 +1,15 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once(__DIR__ . '/../includes/loader.php');
 
-// $priorities = getAllPriority();
-// $types = getAllType();
-// $statuses = getAllStatus();
-// $results = getAllResult();
+$requestors = getAllRequestors();
+$priorities = getAllPriority();
+$types = getAllType();
+$reviewers = getAllReviewers();
+$statuses = getAllStatus();
+$results = getAllResult();
 
 require_once(__DIR__ . '/../templates/header.php');
 ?>
@@ -13,7 +18,14 @@ require_once(__DIR__ . '/../templates/header.php');
 	<h2>New Change</h2>
 	<form id="new-change-form" action="change/new.php" method="POST">
 		<label for="owner">Owner:</label><input type="text" name="owner" placeholder="Owner">
-		<label for="requestor">Requestor:</label><select name="requestor"></select>
+		<label for="requestor">Requestor:</label><select name="requestor" class="select2">
+			<?php
+			foreach ($requestors as $requestor)
+			{
+				echo $requestor->displayOption();
+			}
+			?>
+		</select>
 		<label for="description">Description:</label><input type="textarea" name="description" placeholder="Description">
 		<label for="business_case">Business Case:</label><input type="textarea" name="business_case" placeholder="Business Case">
 		<label for="business_impact">Business Impact:</label><input type="textarea" name="business_impact" placeholder="Business Impact">
@@ -28,12 +40,47 @@ require_once(__DIR__ . '/../templates/header.php');
 		<label for="change_date">Change Date:</label><duet-date-picker name="change_date" placeholder="Change Date"></duet-date-picker>
 		<label for="expected_time">Expected Time:</label><input type="number" name="expected_time" placeholder="Expected Time">
 		<label for="expected_duration">Expected Duration:</label><input type="number" name="expected_duration" placeholder="Expected Duration">
-		<label for="priority">Priority:</label><select name="priority"></select>
-		<label for="type">Type:</label><select name="type"></select>
+		<label for="priority">Priority:</label><select name="priority" class="select2">
+			<?php
+			foreach ($priorities as $priority)
+			{
+				echo $priority->displayOption();
+			}
+			?>
+		</select>
+		<label for="type">Type:</label><select name="type" class="select2">
+			<?php
+			foreach ($types as $type)
+			{
+				echo $type->displayOption();
+			}
+			?>
+		</select>
 		<label for="review_date">Review Date:</label><duet-date-picker name="review_date" placeholder="Review Date"></duet-date-picker>
-		<label for="reviewers">Reviewers:</label><select name="reviewers"></select>
-		<label for="status">Status:</label><select name="status"></select>
-		<label for="result">Result:</label><select name="result"></select>
+		<label for="reviewers">Reviewers:</label><select name="reviewers" class="select2">
+			<?php
+			foreach ($reviewers as $reviewer)
+			{
+				echo $reviewer->displayOption();
+			}
+			?>
+		</select>
+		<label for="status">Status:</label><select name="status" class="select2">
+			<?php
+			foreach ($statuses as $status)
+			{
+				echo $status->displayOption();
+			}
+			?>
+		</select>
+		<label for="result">Result:</label><select name="result" class="select2">
+			<?php
+			foreach ($results as $result)
+			{
+				echo $result->displayOption();
+			}
+			?>
+		</select>
 		<label for="notes">Notes:</label><input type="textarea" name="notes" placeholder="Notes">
 		<label for="completion_date">Completion Date:</label><duet-date-picker name="completion_date" placeholder="Completion Date"></duet-date-picker>
 	</form>

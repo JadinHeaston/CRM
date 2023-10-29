@@ -51,19 +51,13 @@
 	</button>
 	<ul>
 		<li>
-			<a href="/" hx-get="/" hx-select="main" hx-target="main" hx-swap="outerHTML" hx-push-url="true">Home</a>
+			<a href="<?php echo APP_ROOT; ?>change/new.php" hx-get="<?php echo APP_ROOT; ?>change/new.php" hx-select="main" hx-target="main" hx-swap="outerHTML" hx-push-url="true">New Change</a>
 		</li>
 		<li>
-			<a href="/change/new.php" hx-get="/change/new.php" hx-select="main" hx-target="main"
-				hx-swap="outerHTML" hx-push-url="true">New Change</a>
+			<a href="<?php echo APP_ROOT; ?>change/approvals.php" hx-get="<?php echo APP_ROOT; ?>change/approvals.php" hx-select="main" hx-target="main" hx-swap="outerHTML" hx-push-url="true">Approvals</a>
 		</li>
 		<li>
-			<a href="/change/approvals.php" hx-get="/change/approvals.php" hx-select="main" hx-target="main"
-				hx-swap="outerHTML" hx-push-url="true">Approvals</a>
-		</li>
-		<li>
-			<a href="/change/history.php" hx-get="/change/history.php" hx-select="main" hx-target="main"
-				hx-swap="outerHTML" hx-push-url="true">Change History</a>
+			<a href="<?php echo APP_ROOT; ?>change/history.php" hx-get="<?php echo APP_ROOT; ?>change/history.php" hx-select="main" hx-target="main" hx-swap="outerHTML" hx-push-url="true">Change History</a>
 		</li>
 	</ul>
 </nav>

@@ -1,80 +1,42 @@
--- Database Creation
-CREATE OR REPLACE DATABASE crm;
+USE crm;
 
 -- Permission
-CREATE TABLE `Permission` (
+CREATE TABLE IF NOT EXISTS `Permission` (
 	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(256) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
----- Values
-INSERT INTO Permission values
-(1, "Void", "Catch-all."), 
-(2, "Administrator", "Full system administration."), 
-(3, "Viewer", "View only access."), 
-(4, "Reviewer", "Review changes.");
 
 -- Priority
-CREATE TABLE `Priority` (
+CREATE TABLE IF NOT EXISTS `Priority` (
 	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(256) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
----- Values
-INSERT INTO Priority values
-(1, "Void", "Catch-all."),
-(2, "Low", ""),
-(3, "Medium", ""),
-(4, "High", ""),
-(5, "Emergency", "");
 
 -- Result
-CREATE TABLE `Result` (
+CREATE TABLE IF NOT EXISTS `Result` (
 	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(256) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
----- Values
-INSERT INTO Result values
-(1, "Void", "Initial value and catch-all."),
-(2, "Successful", "The change has been done successfully."),
-(3, "Failed", "The change failed to be done."),
-(4, "Cancelled", "The change was cancelled.");
 
 -- Status
-CREATE TABLE `Status` (
+CREATE TABLE IF NOT EXISTS `Status` (
 	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(256) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
----- Values
-INSERT INTO Status values
-(1, "Void", "Initial request creation status, also acts as a catch-all failure."),
-(2, "Draft", "A draft of a request."),
-(3, "Requested", "The change has been requested and is awaiting approval."),
-(4, "Approved", "The change has been approved!"),
-(5, "Denied", "The change has been denied."),
-(6, "Deleted", "The change has been deleted.");
 
 -- Type
-CREATE TABLE `Type` (
+CREATE TABLE IF NOT EXISTS `Type` (
 	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(256) NOT NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
----- Values
-INSERT INTO Type values
-(1, "Void", "Catch-all."),
-(2, "Normal", "A planned change."),
-(3, "Emergency", "An urgent unplanned change.");
-
 -- User
-CREATE TABLE `User` (
+CREATE TABLE IF NOT EXISTS `User` (
 	id BINARY(16) NOT NULL DEFAULT UUID() PRIMARY KEY,
 	username VARCHAR(64) NOT NULL,
 	first_name VARCHAR(64) NOT NULL,
@@ -86,7 +48,7 @@ CREATE TABLE `User` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- Change
-CREATE TABLE `Change` (
+CREATE TABLE IF NOT EXISTS `Change` (
 	id BINARY(16) NOT NULL DEFAULT UUID() PRIMARY KEY,
 	owner BINARY(16) NOT NULL,
 	requestor BINARY(16) NOT NULL,
@@ -99,7 +61,7 @@ CREATE TABLE `Change` (
 	risk TEXT(65535) NULL,
 	regulatory_compliance TEXT(65535) NULL,
 	documentation TEXT(65535) NOT NULL,
-	recovery_procedure TEXT( 6553),
+	recovery_procedure TEXT(6553),
 	test_procudure TEXT(65535) NULL,
 	change_date DATETIME NOT NULL,
 	changers json NOT NULL,
@@ -129,5 +91,3 @@ CREATE TABLE `Change` (
 	INDEX ix_creation_date (creation_date),
 	INDEX ix_completion_date (completion_date)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
-

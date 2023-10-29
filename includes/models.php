@@ -2,11 +2,38 @@
 
 class DatabaseConnector
 {
-	protected \PDO $connection;
+	protected $connection;
 	protected $type;
-	public \PDOStatement $stmt;
 
-	public function __construct(string $host, int $port, string $db, string $user, string $pass, string $type, string $charset = 'utf8mb4', bool|NULL $trustCertificate = NULL)
+	private $queries = array(
+		'listTables' => array(
+			'mysql' => 'SHOW FULL tables',
+			'sqlite' => 'SELECT * FROM sqlite_schema WHERE type =\'table\' AND name NOT LIKE \'sqlite_%\'',
+			'sqlsrv' => 'SELECT DISTINCT TABLE_NAME FROM information_schema.tables'
+		),
+		'getTableInformation' => array(
+			'mysql' => 'DESCRIBE ?',
+			'sqlite' => 'PRAGMA table_info(?)',
+			'sqlsrv' => 'SELECT * FROM information_schema.columns WHERE TABLE_NAME = ? order by ORDINAL_POSITION'
+		),
+		'getTableIndexes' => array(
+			'mysql' => 'SHOW INDEX FROM ?',
+			'sqlite' => 'SELECT * FROM sqlite_master WHERE type = \'index\' AND tbl_name = ?',
+			'sqlsrv' => 'SELECT * FROM sys.indexes WHERE object_id = (SELECT object_id FROM sys.objects WHERE name = ?)'
+		),
+		'getTableCreation' => array(
+			'mysql' => 'SHOW CREATE TABLE ?',
+			'sqlite' => 'SELECT sql FROM sqlite_schema WHERE name = ?',
+			'sqlsrv' => false //Not available without a stored procedure.
+		),
+		'createTable' => array(
+			'mysql' => 'CREATE TABLE IF NOT EXISTS ? ()',
+			'sqlite' => 'CREATE TABLE IF NOT EXISTS ? (column_name datatype, column_name datatype);',
+			'sqlsrv' => ''
+		)
+	);
+
+	public function __construct(string $type, string $hostPath, int $port = null, string $db = '', string $user = '', string $pass = '', string $charset = 'utf8mb4', bool|null $trustCertificate = null)
 	{
 		$this->type = strtolower(trim($type));
 		try
@@ -15,10 +42,12 @@ class DatabaseConnector
 			$dsn = $this->type;
 			if ($this->type === 'mysql')
 				$dsn .= ':host=';
+			elseif ($this->type === 'sqlite')
+				$dsn .= ':';
 			elseif ($this->type === 'sqlsrv')
 				$dsn .= ':Server=';
 
-			$dsn .= $host;
+			$dsn .= $hostPath;
 
 			if ($this->type === 'mysql')
 				$dsn .= ';port=' . strval($port);
@@ -32,7 +61,7 @@ class DatabaseConnector
 
 			if ($this->type === 'mysql')
 				$dsn .= ';charset=' . $charset;
-			if ($this->type === 'sqlsrv' && $trustCertificate !== NULL)
+			if ($this->type === 'sqlsrv' && $trustCertificate !== null)
 				$dsn .= ';TrustServerCertificate=' . strval(intval($trustCertificate));
 
 			//Attempting connection.
@@ -49,17 +78,22 @@ class DatabaseConnector
 		return $this->connection;
 	}
 
-	public function executeStatement(string $query, $params = [])
+	public function executeStatement($query = '', $params = [], $skipPrepare = false)
 	{
 		try
 		{
-			$this->stmt = $this->connection->prepare($query);
+			if ($skipPrepare !== true)
+			{
+				$stmt = $this->connection->prepare($query);
 
-			if ($this->stmt === false)
-				throw new \Exception('Unable to do prepared statement: ' . $query);
+				if ($stmt === false)
+					throw new \Exception('Unable to do prepared statement: ' . $query);
 
-			$this->stmt->execute($params);
-			return $this->stmt;
+				$stmt->execute($params);
+				return $stmt;
+			}
+			else
+				return $this->connection->exec($query);
 		}
 		catch (\Exception $e)
 		{
@@ -67,26 +101,12 @@ class DatabaseConnector
 		}
 	}
 
-	public function select(string $query, $params = [])
+	public function select($query = '', $params = [])
 	{
 		try
 		{
-			$this->stmt = $this->executeStatement($query, $params);
-			return $this->stmt->fetchAll();
-		}
-		catch (\Exception $e)
-		{
-			throw new \Exception($e->getMessage());
-		}
-		return false;
-	}
-
-	public function update(string $query, $params = [])
-	{
-		try
-		{
-			$this->stmt = $this->executeStatement($query, $params);
-			return $this->stmt->rowCount();
+			$stmt = $this->executeStatement($query, $params);
+			return $stmt->fetchAll();
 		}
 		catch (\Exception $e)
 		{
@@ -95,22 +115,12 @@ class DatabaseConnector
 		return false;
 	}
 
-	public function listTables($includeViews = true)
+	public function update($query = '', $params = [])
 	{
-		if ($this->type === 'mysql')
-			$query = 'SHOW FULL tables';
-		elseif ($this->type === 'sqlsrv')
-			$query = 'SELECT DISTINCT TABLE_NAME FROM information_schema.tables';
-
-		if ($includeViews === false && $this->type === 'mysql')
-			$query .= ' WHERE Table_Type = \'BASE TABLE\'';
-		elseif ($includeViews === false && $this->type === 'sqlsrv')
-			$query .= ' WHERE TABLE_TYPE = \'BASE TABLE\'';
-
 		try
 		{
-			$this->stmt = $this->executeStatement($query);
-			return $this->stmt->fetchAll();
+			$stmt = $this->executeStatement($query, $params);
+			return $stmt->rowCount();
 		}
 		catch (\Exception $e)
 		{
@@ -124,16 +134,43 @@ class DatabaseConnector
 		return $this->connection->lastInsertId();
 	}
 
+	public function listTables($includeViews = true)
+	{
+		$query = $this->queries[__FUNCTION__][$this->type];
+		if ($query === false)
+			return false;
+
+		if ($includeViews === false && $this->type === 'mysql')
+			$query .= ' WHERE Table_Type = \'BASE TABLE\'';
+		elseif ($includeViews === false && $this->type === 'sqlsrv')
+			$query .= ' WHERE TABLE_TYPE = \'BASE TABLE\'';
+
+		try
+		{
+			$stmt = $this->executeStatement($query);
+			return $stmt->fetchAll();
+		}
+		catch (\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
+		}
+		return false;
+	}
+
 	public function getTableInformation(string $table)
 	{
-		if ($this->type === 'mysql')
-			$query = 'DESCRIBE ?';
+		$query = $this->queries[__FUNCTION__][$this->type];
+		if ($query === false)
+			return false;
+
+		elseif ($this->type === 'sqlite')
+			$query = 'PRAGMA table_info(?)';
 		elseif ($this->type === 'sqlsrv')
 			$query = 'SELECT * FROM information_schema.columns WHERE TABLE_NAME = ? order by ORDINAL_POSITION';
 		try
 		{
-			$this->stmt = $this->executeStatement($query, array($table));
-			return $this->stmt->fetchAll();
+			$stmt = $this->executeStatement($query, array($table));
+			return $stmt->fetchAll();
 		}
 		catch (\Exception $e)
 		{
@@ -144,15 +181,14 @@ class DatabaseConnector
 
 	public function getTableIndexes(string $table)
 	{
-		if ($this->type === 'mysql')
-			$query = 'SHOW INDEX FROM ?';
-		elseif ($this->type === 'sqlsrv')
-			$query = 'SELECT * FROM sys.indexes WHERE object_id = (SELECT object_id FROM sys.objects WHERE name = ?)';
+		$query = $this->queries[__FUNCTION__][$this->type];
+		if ($query === false)
+			return false;
 
 		try
 		{
-			$this->stmt = $this->executeStatement($query, array($table));
-			return $this->stmt->fetchAll();
+			$stmt = $this->executeStatement($query, array($table));
+			return $stmt->fetchAll();
 		}
 		catch (\Exception $e)
 		{
@@ -163,15 +199,14 @@ class DatabaseConnector
 
 	public function getTableCreation(string $table)
 	{
-		if ($this->type === 'mysql')
-			$query = 'SHOW CREATE TABLE ?';
-		elseif ($this->type === 'sqlsrv')
-			return false; //Not available without a stored procedure.
+		$query = $this->queries[__FUNCTION__][$this->type];
+		if ($query === false)
+			return false;
 
 		try
 		{
-			$this->stmt = $this->executeStatement($query, array($table));
-			return $this->stmt->fetchAll();
+			$stmt = $this->executeStatement($query, array($table));
+			return $stmt->fetchAll();
 		}
 		catch (\Exception $e)
 		{
@@ -180,114 +215,35 @@ class DatabaseConnector
 		return false;
 	}
 
-	/**
-	 * Returns the final output query string that is internally constructed by the PDO.
-	 *
-	 * @param string $string
-	 * @param array $array
-	 * @return string
-	 */
-	public function debugBuildQuery(string $string, $array = [])
+	//$columns is expected to follow the structure below:
+	// [
+	// 	0 => array(
+	// 		'name' => '',
+	// 		'type' => '',
+	// 		'index' => false,
+	// 		'primary' => false,
+	// 		'null' => false,
+	// 		'default' => '', //Any type.
+	// 		'foreign_key' => array()
+	// 	),
+	// ]
+	public function createTable(string $tableName, array $columns)
 	{
-		//Get the key lengths for each of the array elements.
-		$keys = array_map('strlen', array_keys($array));
+		$query = $this->queries[__FUNCTION__][$this->type];
+		if ($query === false)
+			return false;
 
-		//Sort the array by string length so the longest strings are replaced first.
-		array_multisort($keys, SORT_DESC, $array);
-
-		foreach ($array as $k => $v)
+		try
 		{
-			//Quote non-numeric values.
-			$replacement = is_numeric($v) ? $v : "'{$v}'";
-
-			//Replace the needle.
-			$string = str_replace($k, $replacement, $string);
+			$stmt = $this->executeStatement($query, array($tableName,));
+			return $stmt->fetchAll();
+		}
+		catch (\Exception $e)
+		{
+			throw new \Exception($e->getMessage());
 		}
 
-		return $string;
-	}
-
-	/**
-	 * Initiates a transaction
-	 *
-	 * Pass-through method: `PDO::beginTransaction()`
-	 * @return bool TRUE on success or FALSE on failure.
-	 * @throws PDOException If there is already a transaction started or the driver does not support transactions Note: An exception is raised even when the PDO::ATTR_ERRMODE attribute is not PDO::ERRMODE_EXCEPTION.
-	 */
-	public function beginTransaction()
-	{
-		return $this->connection->beginTransaction();
-	}
-
-	/**
-	 * Commits a transaction
-	 *
-	 * Pass-through method: `PDO::commit()`
-	 * @return bool TRUE on success or FALSE on failure.
-	 * @throws PDOException if there is no active transaction.
-	 */
-	public function commit()
-	{
-		return $this->connection->commit();
-	}
-
-	/**
-	 * Checks if inside a transaction
-	 *
-	 * Pass-through method: `PDO::inTransaction()`
-	 * @return bool TRUE if a transaction is currently active, and FALSE if not.
-	 */
-	public function inTransaction()
-	{
-		return $this->connection->inTransaction();
-	}
-
-	/**
-	 * Rolls back a transaction
-	 *
-	 * Pass-through method: `PDO::rollBack()`
-	 * @return bool TRUE on success or FALSE on failure.
-	 * @throws PDOException if there is no active transaction.
-	 */
-	public function rollBack()
-	{
-		return $this->connection->rollBack();
-	}
-}
-
-class CIS extends DatabaseConnector
-{
-	/**
-	 * Returns all users.
-	 *
-	 * @return array|false
-	 */
-	public function getAllUsers(): array|false
-	{
-		return $this->select('SELECT * FROM users');
-	}
-
-	/**
-	 * Sets a users active status based on their employee ID.
-	 *
-	 * @param int employeeID
-	 * @param boolean $status
-	 * @return int|false Count of changed rows.
-	 */
-	public function setUserActiveState(int $employeeID, int $status): int|false
-	{
-		return $this->update('UPDATE users SET Active = ? WHERE EMPID = ?', [$status, $employeeID]);
-	}
-
-	/**
-	 * Retrieves all information for a given user based on their employee ID.
-	 *
-	 * @param integer $employeeID
-	 * @return array|false
-	 */
-	public function getUserInformation(int $employeeID): array|false
-	{
-		return $this->select('SELECT * FROM users WHERE EMPID = ?', [$employeeID]);
+		return false;
 	}
 }
 
@@ -681,6 +637,10 @@ class ScopeTimer
 	//$timer = new ScopeTimer(__FILE__);
 }
 
+class CRMConnection extends DatabaseConnector
+{
+}
+
 class User
 {
 	public string $id;
@@ -689,6 +649,27 @@ class User
 	public string $lastName;
 	public string $email;
 	public Permission $permission;
+
+	public function __construct(array $databaseRow)
+	{
+		if (isset($databaseRow['id']))
+			$this->id = $databaseRow['id'];
+		if (isset($databaseRow['username']))
+			$this->username = $databaseRow['username'];
+		if (isset($databaseRow['first_name']))
+			$this->firstName = $databaseRow['first_name'];
+		if (isset($databaseRow['last_name']))
+			$this->lastName = $databaseRow['last_name'];
+		if (isset($databaseRow['email']))
+			$this->email = $databaseRow['email'];
+		if (isset($databaseRow['permission']))
+			$this->permission = Permission::from(intval($databaseRow['permission']));
+	}
+
+	public function displayOption()
+	{
+		return '<option value="' . $this->id . '">' . ucwords(strtolower($this->firstName)) . ' ' . ucwords(strtolower($this->lastName)) . ' (' . strtoupper($this->username) . ')</option>';
+	}
 }
 
 class Change

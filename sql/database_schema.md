@@ -144,16 +144,18 @@ CREATE TABLE `Permission` (
 | 1   | Void          | Catch-all failure.          |
 | 2   | Administrator | Full system administration. |
 | 3   | Viewer        | View only access.           |
-| 4   | Reviewer      | Review changes.             |
+| 4   | Requestor     | Request changes.            |
+| 5   | Reviewer      | Review changes.             |
 
 ##### SQL Insert
 
 ```sql
 INSERT INTO Permission values
-(1, "Void", "Catch-all failure."), 
-(2, "Administrator", "Full system administration."), 
-(3, "Viewer", "View only access."), 
-(4, "Reviewer", "Review changes.");
+(1, 'Void', 'Catch-all failure.'), 
+(2, 'Administrator', 'Full system administration.'), 
+(3, 'Viewer', 'View only access.'), 
+(4, 'Requestor', 'Requests changes.');
+(5, 'Reviewer', 'Review changes.');
 ```
 
 ### Priority
@@ -188,11 +190,11 @@ CREATE TABLE `Priority` (
 
 ```sql
 INSERT INTO Priority values
-(1, "Void", "Catch-all."),
-(2, "Low", ""),
-(3, "Medium", ""),
-(4, "High", ""),
-(5, "Emergency", "");
+(1, 'Void', 'Catch-all.'),
+(2, 'Low', ''),
+(3, 'Medium', ''),
+(4, 'High', ''),
+(5, 'Emergency', '');
 ```
 
 ### Result
@@ -226,10 +228,10 @@ CREATE TABLE `Result` (
 
 ```sql
 INSERT INTO Result values
-(1, "Void", "Initial value and catch-all."),
-(2, "Successful", "The change has been done successfully."),
-(3, "Failed", "The change failed to be done."),
-(4, "Cancelled", "The change was cancelled.");
+(1, 'Void', 'Initial value and catch-all.'),
+(2, 'Successful', 'The change has been done successfully.'),
+(3, 'Failed', 'The change failed to be done.'),
+(4, 'Cancelled', 'The change was cancelled.');
 ```
 
 ### Status
@@ -265,12 +267,12 @@ CREATE TABLE `Status` (
 
 ```sql
 INSERT INTO Status values
-(1, "Void", "Initial request creation status, also acts as a catch-all failure."),
-(2, "Draft", "A draft of a request."),
-(3, "Requested", "The change has been requested and is awaiting approval."),
-(4, "Approved", "The change has been approved!"),
-(5, "Denied", "The change has been denied."),
-(6, "Deleted", "The change has been deleted.");
+(1, 'Void', 'Initial request creation status, also acts as a catch-all failure.'),
+(2, 'Draft', 'A draft of a request.'),
+(3, 'Requested', 'The change has been requested and is awaiting approval.'),
+(4, 'Approved', 'The change has been approved!'),
+(5, 'Denied', 'The change has been denied.'),
+(6, 'Deleted', 'The change has been deleted.');
 ```
 
 ### Type
@@ -303,9 +305,9 @@ CREATE TABLE `Type` (
 
 ```sql
 INSERT INTO Type values
-(1, "Void", "Catch-all."),
-(2, "Normal", "A planned change."),
-(3, "Emergency", "An urgent unplanned change.");
+(1, 'Void', 'Catch-all.'),
+(2, 'Normal', 'A planned change.'),
+(3, 'Emergency', 'An urgent unplanned change.');
 ```
 
 ### User

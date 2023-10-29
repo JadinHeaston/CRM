@@ -2,6 +2,7 @@
 DEFINE('DEBUG', false);
 DEFINE('DISABLE_ERROR_EMAILS', false);
 DEFINE('ERROR_EMAIL_ADDRESSES', array('<EMAIL>'));
+DEFINE('APP_ROOT', '/');
 
 //Database
 define('DB_HOST', 'localhost');

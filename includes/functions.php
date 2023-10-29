@@ -20,6 +20,15 @@ function secondsToHumanTime(int $seconds)
 	return str_replace(' 1 seconds', ' 1 second', $dateHandle->diff(new DateTime("@$seconds"))->format(implode(', ', $format)));
 }
 
+function isHTMX()
+{
+	$headers = getallheaders();
+	if ($headers !== false && isset($headers['Hx-Request']) && boolval($headers['Hx-Request']) === true)
+		return true;
+	else
+		return false;
+}
+
 function rotate(array $array)
 {
 	array_unshift($array, null);
@@ -113,14 +122,37 @@ function getAllUser()
 		throw new Exception('Query failed (User). Contact adminstrator.');
 	foreach ($results as $row)
 	{
-		$user = new User;
-		$user->id = $row['id'];
-		$user->username = $row['username'];
-		$user->firstName = $row['first_name'];
-		$user->lastName = $row['last_name'];
-		$user->email = $row['email'];
-		$user->permission = $row['permission'];
-		$output[] = $user;
+		$output[] = new User($row);
+	}
+	return $output;
+}
+
+function getAllRequestors()
+{
+	global $connection;
+	$output = array();
+
+	$results = $connection->select('SELECT * FROM User WHERE Permission IN (?)', [implode(',', [2, 4])]);
+	if ($results === false)
+		throw new Exception('Query failed (User). Contact adminstrator.');
+	foreach ($results as $row)
+	{
+		$output[] = new User($row);
+	}
+	return $output;
+}
+
+function getAllReviewers()
+{
+	global $connection;
+	$output = array();
+
+	$results = $connection->select('SELECT * FROM User WHERE Permission IN (?)', [implode(',', [2, 5])]);
+	if ($results === false)
+		throw new Exception('Query failed (User). Contact adminstrator.');
+	foreach ($results as $row)
+	{
+		$output[] = new User($row);
 	}
 	return $output;
 }

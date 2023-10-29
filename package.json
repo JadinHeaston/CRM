@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@types/datatables.net": "^1.10.26",
+    "@types/jquery": "^3.5.25",
+    "@types/select2": "^4.0.60"
+  }
+}
