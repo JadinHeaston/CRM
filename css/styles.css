@@ -72,6 +72,13 @@ header>h1 {
 	padding: 0;
 }
 
+header>h1>a {
+	/* blue colors for links too */
+	color: inherit;
+	/* no underline */
+	text-decoration: inherit;
+}
+
 nav {
 	display: flex;
 	flex-direction: column;
@@ -163,8 +170,7 @@ footer {
 	width: 50%;
 }
 
-#new-change-form > label
-{
+#new-change-form>label {
 	display: flex;
 	align-items: center;
 }
