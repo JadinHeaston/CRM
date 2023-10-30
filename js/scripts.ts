@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	initializeListeners();
 	initDataTables();
 	initSelect2Inputs();
+	updateProcessingTimes();
 	// //Confetti!!!!
 	// document.querySelectorAll("canvas.confetti").forEach((connfettiCanvas) => {
 	// 	if (!(connfettiCanvas instanceof HTMLCanvasElement))
@@ -19,7 +20,14 @@ async function initializeListeners(): Promise<void> {
 document.addEventListener('htmx:afterRequest', function (evt) {
 	initDataTables();
 	initSelect2Inputs();
+	updateProcessingTimes();
 });
+
+async function updateProcessingTimes() {
+	let fullTimer = document.querySelector('main #processing-time-full');
+	document.querySelector("footer #processing-time-full").replaceWith(fullTimer);
+	return;
+}
 
 /* Initializes Data Tables */
 async function initDataTables() {

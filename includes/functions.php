@@ -20,6 +20,25 @@ function secondsToHumanTime(int $seconds)
 	return str_replace(' 1 seconds', ' 1 second', $dateHandle->diff(new DateTime("@$seconds"))->format(implode(', ', $format)));
 }
 
+function setHTTPCaching(bool $cache = false, bool $private = true, int $maxAge = 7200)
+{
+	if ($cache === true)
+	{
+		if ($private === true)
+			header('Cache-Control: Private');
+		else
+			header('Cache-Control: public');
+
+		header('Cache-Control: max-age=' . $maxAge); //If the value is to be cached, this is the max age.
+		header('Etag: '  . substr(md5(filemtime(__FILE__)), 0, 6));
+	}
+	else if ($cache === false)
+	{
+		header('Cache-Control: no-store, must-revalidate');
+		header('Pragma: no-store');
+	}
+}
+
 function isHTMX()
 {
 	$headers = getallheaders();

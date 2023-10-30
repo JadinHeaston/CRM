@@ -1,0 +1,15 @@
+{
+	"recommendations": [
+		"mkxml.vscode-filesize",
+		"rifi2k.format-html-in-php",
+		"eamodio.gitlens",
+		"ecmel.vscode-html-css",
+		"oderwat.indent-rainbow",
+		"zignd.html-css-class-completion",
+		"yzhang.markdown-all-in-one",
+		"neilbrayfield.php-docblocker",
+		"bmewburn.vscode-intelephense-client",
+		"adpyke.vscode-sql-formatter",
+		"jock.svg"
+	]
+}

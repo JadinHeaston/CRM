@@ -2,16 +2,38 @@
 	--default-transition-duration: 350ms;
 	/* Header */
 	--header-height: 5rem;
-	--header-background-color: red;
+	--header-background-color: #919596;
 
 	/* Main */
 	--main-background-color: coral;
 
 	/* Footer */
 	--footer-height: 5rem;
-	--footer-background-color: blue;
+	--footer-background-color: #919596;
 
 	font-size: 18px;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: peru transparent;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+	width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: peru;
+	border-radius: 12px;
+	border: 0px solid transparent;
 }
 
 .no-text-select {
@@ -44,6 +66,15 @@ input::-webkit-inner-spin-button {
 	margin: 0;
 }
 
+.resizable {
+	resize: both;
+	overflow: auto;
+	font: inherit;
+	border: inherit;
+	padding: .2rem;
+	height: 1rem;
+}
+
 /* Firefox */
 input[type=number] {
 	appearance: textfield;
@@ -58,6 +89,7 @@ body {
 	margin: 0;
 	height: 100vh;
 	max-height: 100vh;
+	overflow: hidden;
 }
 
 header {
@@ -101,6 +133,14 @@ nav button {
 nav #menu-icon {
 	height: 2rem;
 	width: 2rem;
+	transition-duration: var(--default-transition-duration);
+	border-radius: .5rem;
+}
+
+nav>button:hover>#menu-icon,
+nav>button:focus>#menu-icon,
+nav>button:active>#menu-icon {
+	background-color: lightgrey;
 }
 
 nav>button:hover~ul,
@@ -155,6 +195,7 @@ main {
 	align-items: center;
 	justify-content: start;
 	background-color: var(--main-background-color);
+	max-height: 100vh;
 	width: 100%;
 }
 
@@ -167,7 +208,10 @@ footer {
 #new-change-form {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	grid-gap: .5rem;
 	width: 50%;
+	padding: 1rem;
+	overflow: auto;
 }
 
 #new-change-form>label {
